@@ -12,7 +12,7 @@ const Hero = () => {
         <p className='mt-4 max-w-xs sm:max-w-lg 2xl:max-w-xl m-auto max-sm:text-xs text-gray-600'> Transform your content creation with our suite of premium AI tools. Write articles , Generate image and enhance your workflow. </p>
      </div>
      <div className='flex justify-center mt-6'>
-        <button  onclick={()=>Navigate('/ai')}  className='bg-primary  text-white px-6 py-3 rounded-lg font-medium hover:bg-primary-600  active:scale-95 transition duration-300 cursor-pointer '>Start Creating  </button>
+        <button  onClick={()=>Navigate('/ai')}  className='bg-primary  text-white px-6 py-3 rounded-lg font-medium hover:bg-primary-600  active:scale-95 transition duration-300 cursor-pointer '>Start Creating  </button>
         <button className='ml-4 bg-gray-200  text-primary px-6 py-3 rounded-lg font-medium active:scale-95 hover:bg-gray-300 transition duration-300 cursor-pointer'>Watch Demo!</button>
      </div>
      <div className='flex items-center  gap-4 mt-8 mx-auto text-gray-500'>
