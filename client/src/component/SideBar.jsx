@@ -53,10 +53,10 @@ const SideBar = (sidebar, setSideBar) => {
                         <h1 className=' text-sm font-medium'>{user.fullName}</h1>
                         {/* <p className='text-gray-500'>{user.primaryEmailAddress?.emailAddress}</p> */}
                         <p className='text-xs text-gray-400'>
-                            <Protect plan='premium' fallback='free'> Premium
+                            <Protect plan='premium' fallback='free'> Premium Plan
 
                             </Protect>
-                            Plan
+                            
                         </p>
                     </div>
                 </div>

@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
 import { assets } from '../assets/assets'
-import { LoaderPinwheel, Menu, X } from 'lucide-react'
+import { LoaderCircle, Menu, X } from 'lucide-react'
 import Sidebar from '../component/SideBar'
 import { useUser, SignIn } from '@clerk/clerk-react'
 
@@ -20,7 +20,7 @@ const Layout = () => {
     return (
       <div className='flex items-center justify-center h-screen bg-[url()}'>
         Loading...
-        <LoaderPinwheel />
+        <LoaderCircle />
       </div>
     )
   }
