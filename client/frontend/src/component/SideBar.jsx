@@ -8,10 +8,10 @@ const navitems = [
 
     { to: '/ai', label: 'Dashboard', Icon: House },
     { to: '/ai/write-article', label: 'Write Article', Icon: SquarePen },
-    { to: '/ai/remove-object', label: 'Remove Object', Icon: Scissors },
-    { to: '/ai/remove-background', label: 'Remove Background', Icon: Eraser },
-    { to: '/ai/generate-image', label: 'Generate Image', Icon: Image },
     { to: '/ai/blog-title', label: 'Blog Title', Icon: Hash },
+    { to: '/ai/generate-image', label: 'Generate Image', Icon: Image },
+    { to: '/ai/remove-background', label: 'Remove Background', Icon: Eraser },
+    { to: '/ai/remove-object', label: 'Remove Object', Icon: Scissors },
     { to: '/ai/review-resume', label: 'Review Resume', Icon: FileText },
     { to: '/ai/community', label: 'Community', Icon: UsersIcon },
 ]

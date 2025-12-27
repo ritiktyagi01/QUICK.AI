@@ -3,9 +3,9 @@ import React, { useState } from 'react'
 
 const BlogTitle = () => {
   const [titleLength, setTitleLength] = useState('short'); 
-  const [inputText, setInputText] = useState('');
   const [tone, setTone] = useState('informative');
-  const onSubmitHandler = (e) => {
+  const [inputText, setInputText] = useState('');
+  function onSubmitHandler(e) {
     e.preventDefault();
     // Handle form submission logic here
   }
@@ -67,7 +67,7 @@ const BlogTitle = () => {
           {/*left col end */}
 
           { /* right col */}
-          <div className='bg-white  flex flex-col border border-gray-200 rounded-lg p-6 flex-1 w-full min-w-75 max-w-lg min-h-104 max-h-158'>
+          <div className='bg-white  flex flex-col border border-gray-200 rounded-lg p-6 flex-1 w-full min-w-75 max-w-lg min-h-96 max-h-150'>
 
             <div className='flex items-center gap-3'>
               <Hash className=' w-6 text-[#4A7AFF]' />
@@ -75,7 +75,7 @@ const BlogTitle = () => {
             </div>
 
             <div className='flex-1 flex justify-center items-center '>
-              <div className='text-sm flex flex-col items-center gap-5 text-gray-500'>
+              <div className='text-sm ml-4 flex flex-col items-center gap-2 text-gray-500'>
                 <Hash className=' w-9 h-6' />
                 <p> Enter a topic and click on "Generate title" to get started</p>
               </div>
