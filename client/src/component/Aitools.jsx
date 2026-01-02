@@ -93,6 +93,7 @@ const Aitools = () => {
 
 
 
+
       <div className='px-4 sm:px-20 xl:px-32 my-24'>
         <div className='text-center mt-8 '>
           <h1 className='text-2xl sm:text-3xl font-bold mb-3'>Loved by Creators</h1>

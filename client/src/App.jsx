@@ -11,8 +11,33 @@ import RemoveBackground from './pages/RemoveBackground'
 import GenerateImage from './pages/GenerateImage'
 import BlogTitle from './pages/BlogTitle'
 import ReviewResume from './pages/ReviewResume'
+import { useAuth } from '@clerk/clerk-react'
+import { useEffect } from 'react'
+import { useSession } from "@clerk/clerk-react";
+
 
 const App = () => {
+
+  const {getToken} = useAuth();
+  useEffect(()=>{
+    getToken().then((token)=>console.log(token));
+  },[])
+  
+
+
+  // const { session, isLoaded } = useSession();
+
+  // useEffect(() => {
+  //   if (!isLoaded || !session) return;
+
+  //   session.getToken().then(token => {
+  //     console.log(token);
+  //   });
+  // }, [isLoaded, session]);
+
+
+
+  
   return (
     <Routes>
       <Route path="/" element={<Home />} />
