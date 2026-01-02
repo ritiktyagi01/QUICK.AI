@@ -5,8 +5,12 @@ import { clerkMiddleware,requireAuth } from '@clerk/express'
 import { clerkClient, getAuth } from '@clerk/express'
 import airouter from './routes/airoute.js'
 
+import connectCloudinary from './config/cloudinary.js'
+
+
 const app = express();
 const PORT = process.env.PORT || 2000;
+await connectCloudinary();
 
 //middleware 
 app.use(express.json());
