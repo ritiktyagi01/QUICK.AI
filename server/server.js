@@ -6,6 +6,7 @@ import { clerkClient, getAuth } from '@clerk/express'
 import airouter from './routes/airoute.js'
 
 import connectCloudinary from './config/cloudinary.js'
+import userRouter from './routes/userRoutes.js'
 
 
 const app = express();
@@ -18,6 +19,8 @@ app.use(cors());
 app.use(clerkMiddleware());
 app.use(requireAuth());
 app.use('/api/ai',airouter);
+app.use('/api/user',userRouter);
+
 
 //method define
 app.get('/',(req,res)=>{
@@ -30,5 +33,7 @@ app.listen(PORT ,()=>{
 })
 
 
-// create addition code 
+// create addition code
+ 
+
 

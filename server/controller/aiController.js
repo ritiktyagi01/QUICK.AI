@@ -59,7 +59,8 @@ import axios from "axios";
 import FormData from "form-data";
 import { v2 as cloudinary } from "cloudinary"
 import fs from 'fs'
-import pdf from "pdf-parse/lib/pdf-parse.js"
+import { createRequire } from "module";
+
 
 const AI = new OpenAI({
     apiKey: process.env.GEMINI_API_KEY,
@@ -69,7 +70,7 @@ const AI = new OpenAI({
 //For Article Generator 
 export const generateArticle = async (req, res) => {
     try {
-        const userId = req.auth.userId;
+        const { userId } = req.auth();
         const { prompt, length } = req.body;
         const plan = req.plan;
         const free_usage = req.free_usage;
@@ -131,7 +132,7 @@ export const generateArticle = async (req, res) => {
 
 export const generateBlogTitle = async (req, res) => {
     try {
-        const userId = req.auth.userId;
+        const { userId } = req.auth();
         const { prompt } = req.body;
         const plan = req.plan;
         const free_usage = req.free_usage;
@@ -233,7 +234,7 @@ export const generateImage = async (req, res) => {
         console.log("STEP 2: body =", req.body);
         console.log("STEP 3: plan =", req.plan);
 
-        const userId = req.auth(); // FIX 1
+        const { userId } = req.auth(); // FIX 1
         const { prompt, publish } = req.body;
         const plan = req.plan;
 
@@ -291,8 +292,8 @@ export const generateImage = async (req, res) => {
 
 export const removeImageBackground = async (req, res) => {
     try {
-        const userId = req.auth();
-        const { image } = req.file;
+        const { userId } = req.auth();
+        const image = req.file;
         const plan = req.plan;
 
         if (plan !== 'premium') {
@@ -312,7 +313,7 @@ export const removeImageBackground = async (req, res) => {
 
         await sql`
             INSERT INTO creations (user_id, content, prompt, type)
-            VALUES (${userId}, ${secure_url},'Remove the background from image, 'image')`;
+            VALUES (${userId}, ${secure_url},'Remove the background from image', 'image')`;
 
         res.json({ success: true, content: secure_url });
 
@@ -329,13 +330,13 @@ export const removeImageBackground = async (req, res) => {
 
 export const removeImageobject = async (req, res) => {
     try {
-        const userId = req.auth();
-        const { image } = req.file;
+        const { userId } = req.auth();
+        const image = req.file;
         const { object } = req.body;
         const plan = req.plan;
 
 
-        if (!prompt) {
+        if (!object) {
             return res.status(400).json({
                 success: false,
                 message: "Prompt is required"
@@ -389,13 +390,16 @@ export const reviewresume = async (req, res) => {
         if (resume.size > 5 * 1024 * 1024) {
             return res.json({ success: false, message: "Resume file size exceeds allowed size (5MB). " })
         }
+
+        const require = createRequire(import.meta.url);
+        const pdf = require("pdf-parse");
         const dataBuffer = fs.readFileSync(resume.path);
         const pdfData = await pdf(dataBuffer)
         const prompt = ` Review the following resume and provide constructive feedback on its strengths, weaknesses, and areas for improvement . Resume content:${pdfData.text}`
 
         const response = await AI.chat.completions.create({
             model: "gemini-2.5-flash",
-            messages: [ {role: "user", content: prompt }],
+            messages: [{ role: "user", content: prompt }],
             temperature: 0.7,
             max_tokens: 1000
         });
