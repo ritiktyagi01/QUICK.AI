@@ -60,6 +60,10 @@ import FormData from "form-data";
 import { v2 as cloudinary } from "cloudinary"
 import fs from 'fs'
 import { createRequire } from "module";
+// import { GoogleGenerativeAI } from "@google/generative-ai";
+
+
+// const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 
 const AI = new OpenAI({
@@ -68,19 +72,21 @@ const AI = new OpenAI({
 });
 
 //For Article Generator 
+
 export const generateArticle = async (req, res) => {
     try {
         const { userId } = req.auth();
         const { prompt, length } = req.body;
         const plan = req.plan;
         const free_usage = req.free_usage;
+        console.log(plan, free_usage, userId , prompt, length);
 
-        if (!prompt || !length) {
-            return res.status(400).json({
-                success: false,
-                message: "Prompt and length are required"
-            });
-        }
+        // if (!prompt) {
+        //     return res.status(400).json({
+        //         success: false,
+        //         message: "Prompt is required"
+        //     });
+        // }
 
         if (plan !== 'premium' && free_usage >= 10) {
             return res.json({
@@ -95,11 +101,12 @@ export const generateArticle = async (req, res) => {
                 {
                     role: "user",
                     content: prompt
-                }
+                },
             ],
             temperature: 0.7,
             max_tokens: length
         });
+        console.log("API Response:", JSON.stringify(response, null, 2));
 
         const content = response.choices[0].message.content;
         //This line extracts the AI-generated text from the API response and stores it in content.
@@ -116,7 +123,7 @@ export const generateArticle = async (req, res) => {
                 }
             });
         }
-
+console.log("Generated Content:", content);
         res.json({ success: true, content });
 
     } catch (error) {
@@ -127,6 +134,72 @@ export const generateArticle = async (req, res) => {
         });
     }
 };
+
+
+// export const generateArticle = async (req, res) => {
+//   try {
+//     const { userId } = await req.auth();
+//     const { prompt } = req.body;
+//     const plan = req.plan;
+//     const free_usage = req.free_usage;
+
+//     if (!prompt) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Prompt is required",
+//       });
+//     }
+
+//     if (plan !== "premium" && free_usage >= 10) {
+//       return res.json({
+//         success: false,
+//         message: "You have reached your free usage limit. Upgrade to Premium.",
+//       });
+//     }
+
+//     // ✅ Gemini v1 REST call (this WORKS)
+//     const response = await axios.post(
+//       `https://generativelanguage.googleapis.com/v1/models/gemini-1.0-pro-latest:generateContent?key=${process.env.GEMINI_API_KEY}`,
+//       {
+//         contents: [
+//           {
+//             role: "user",
+//             parts: [{ text: prompt }],
+//           },
+//         ],
+//       }
+//     );
+
+//     const content =
+//       response.data.candidates[0].content.parts[0].text;
+
+//     await sql`
+//       INSERT INTO creations (user_id, content, prompt, type)
+//       VALUES (${userId}, ${content}, ${prompt}, 'article')
+//     `;
+
+//     if (plan !== "premium") {
+//       await clerkClient.users.updateUserMetadata(userId, {
+//         privateMetadata: {
+//           free_usage: free_usage + 1,
+//         },
+//       });
+//     }
+
+//     res.json({ success: true, content });
+//   } catch (error) {
+//     console.error(
+//       "ARTICLE ERROR:",
+//       error.response?.data || error.message
+//     );
+//     res.status(500).json({
+//       success: false,
+//       message: error.message,
+//     });
+//   }
+// };
+
+
 
 //For Blog Title Generator
 
