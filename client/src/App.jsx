@@ -1,5 +1,5 @@
 import React from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 
 import DashBoard from './pages/DashBoard'
 import Home from './pages/Home'
@@ -14,15 +14,17 @@ import ReviewResume from './pages/ReviewResume'
 import { useAuth } from '@clerk/clerk-react'
 import { useEffect } from 'react'
 import { useSession } from "@clerk/clerk-react";
+import { Toaster } from 'react-hot-toast'
 
 
 const App = () => {
 
+  // Get the token using useAuth
   const {getToken} = useAuth();
   useEffect(()=>{
     getToken().then((token)=>console.log(token));
   },[])
-  
+
 
 
   // const { session, isLoaded } = useSession();
@@ -37,12 +39,25 @@ const App = () => {
 
 
 
-  
+
   return (
+  <>
+    {/* Global UI */}
+    <Toaster />
+
     <Routes>
+      {/* Public route */}
       <Route path="/" element={<Home />} />
 
-      <Route path="/ai" element={<Layout />}>
+      {/* Protected routes */}
+      <Route
+        path="/ai"
+        element={
+          <ProtectedRoutes>
+            <Layout />
+          </ProtectedRoutes>
+        }
+      >
         <Route index element={<DashBoard />} />
         <Route path="write-article" element={<WriteArticle />} />
         <Route path="blog-title" element={<BlogTitle />} />
@@ -53,7 +68,22 @@ const App = () => {
         <Route path="community" element={<Community />} />
       </Route>
     </Routes>
-  )
-}
+  </>
+)};
 
-export default App
+const ProtectedRoutes = ({ children }) => {
+  const { isSignedIn, isLoaded } = useAuth();
+
+  if (!isLoaded) {
+    return <div className='flex justify-center items-center h-screen font-extrabold '>Loading...</div>;
+  }
+
+  if (!isSignedIn) {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
+};
+
+
+export default App;
