@@ -1,65 +1,12 @@
-// import OpenAI from "openai";
-// import sql from "../config/db.js";
-// import { clerkClient } from "@clerk/express";
-
-// const AI = new OpenAI({
-//     apiKey: process.env.GEMINI_API_KEY,
-//     baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/"
-// });
-
-// export const generateArticle = async (req, res) => {
-//     try {
-//         const { userId } = req.auth();
-//         const { prompt, length } = req.body;
-//         const plan = req.plan;
-//         const free_usage = req.free_usage;
-
-//         if (plan !== 'premium' && free_usage >= 10) {
-//             return res.json({ success: false, message: 'You have reached your free usage limit and Upgrade to Premium to continue.' })
-//         }
-//         else {
-//             const response = await AI.chat.completions.create({
-//                 model: "gemini-2.5-flash",
-//                 messages: [
-
-//                     {
-//                         role: "user",
-//                         content: prompt,
-//                     },
-//                 ],
-//                 temperature: 0.7,
-//                 max_tokens: length,
-//             });
-//         }
-//         const content = response.choices[0].message.content;
-//         await sql`INSERT INTO creations (user_id, content,prompt, type )
-//                       VALUES(${userId},${content},${prompt},'article')`;
-
-//         if (plan !== 'premium') {
-//             await clerkClient.users.updateUserMetadata(userId, {
-//                 privateMetadata: {
-//                     free_usage: free_usage + 1
-//                 }
-//             })
-//         }
-//         res.json({ success: true, content });
-
-//     } catch (error) {
-//         console.log(error.message);
-//         res.json({ success: false, message: error.message });
-
-//     }
-// }
-
-
 import OpenAI from "openai";
 import sql from "../config/db.js";
 import { clerkClient } from "@clerk/express";
 import axios from "axios";
 import FormData from "form-data";
 import { v2 as cloudinary } from "cloudinary"
-import fs from 'fs'
-import { createRequire } from "module";
+import fs from "fs";
+import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
+
 // import { GoogleGenerativeAI } from "@google/generative-ai";
 
 
@@ -79,7 +26,7 @@ export const generateArticle = async (req, res) => {
         const { prompt, length } = req.body;
         const plan = req.plan;
         const free_usage = req.free_usage;
-        console.log(plan, free_usage, userId , prompt, length);
+        console.log(plan, free_usage, userId, prompt, length);
 
         // if (!prompt) {
         //     return res.status(400).json({
@@ -100,13 +47,14 @@ export const generateArticle = async (req, res) => {
             messages: [
                 {
                     role: "user",
-                    content: prompt
+                    content: prompt,
                 },
             ],
             temperature: 0.7,
             max_tokens: length
         });
         console.log("API Response:", JSON.stringify(response, null, 2));
+
 
         const content = response.choices[0].message.content;
         //This line extracts the AI-generated text from the API response and stores it in content.
@@ -123,7 +71,7 @@ export const generateArticle = async (req, res) => {
                 }
             });
         }
-console.log("Generated Content:", content);
+        console.log("Generated Content:", content);
         res.json({ success: true, content });
 
     } catch (error) {
@@ -135,85 +83,19 @@ console.log("Generated Content:", content);
     }
 };
 
-
-// export const generateArticle = async (req, res) => {
-//   try {
-//     const { userId } = await req.auth();
-//     const { prompt } = req.body;
-//     const plan = req.plan;
-//     const free_usage = req.free_usage;
-
-//     if (!prompt) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Prompt is required",
-//       });
-//     }
-
-//     if (plan !== "premium" && free_usage >= 10) {
-//       return res.json({
-//         success: false,
-//         message: "You have reached your free usage limit. Upgrade to Premium.",
-//       });
-//     }
-
-//     // ✅ Gemini v1 REST call (this WORKS)
-//     const response = await axios.post(
-//       `https://generativelanguage.googleapis.com/v1/models/gemini-1.0-pro-latest:generateContent?key=${process.env.GEMINI_API_KEY}`,
-//       {
-//         contents: [
-//           {
-//             role: "user",
-//             parts: [{ text: prompt }],
-//           },
-//         ],
-//       }
-//     );
-
-//     const content =
-//       response.data.candidates[0].content.parts[0].text;
-
-//     await sql`
-//       INSERT INTO creations (user_id, content, prompt, type)
-//       VALUES (${userId}, ${content}, ${prompt}, 'article')
-//     `;
-
-//     if (plan !== "premium") {
-//       await clerkClient.users.updateUserMetadata(userId, {
-//         privateMetadata: {
-//           free_usage: free_usage + 1,
-//         },
-//       });
-//     }
-
-//     res.json({ success: true, content });
-//   } catch (error) {
-//     console.error(
-//       "ARTICLE ERROR:",
-//       error.response?.data || error.message
-//     );
-//     res.status(500).json({
-//       success: false,
-//       message: error.message,
-//     });
-//   }
-// };
-
-
-
 //For Blog Title Generator
 
 export const generateBlogTitle = async (req, res) => {
     try {
         const { userId } = req.auth();
-        const { prompt } = req.body;
+        const { prompt, length } = req.body;
         const plan = req.plan;
         const free_usage = req.free_usage;
 
         if (!prompt) {
             return res.status(400).json({
                 success: false,
-                message: "Prompt  isrequired"
+                message: "Prompt  is required"
             });
         }
 
@@ -233,7 +115,7 @@ export const generateBlogTitle = async (req, res) => {
                 }
             ],
             temperature: 0.7,
-            max_tokens: 100
+            max_tokens: 5000
         });
 
         const content = response.choices[0].message.content;
@@ -318,7 +200,7 @@ export const generateImage = async (req, res) => {
             });
         }
 
-        if (plan != "premium") {
+        if (plan.toString() !== "premium") {
             return res.json({
                 success: false,
                 message:
@@ -340,6 +222,7 @@ export const generateImage = async (req, res) => {
                 responseType: "arraybuffer",
             }
         );
+        console.log("IMAGE DATA RECEIVED", data);
 
         const base64Image = `data:image/png;base64,${Buffer.from(
             data
@@ -446,52 +329,86 @@ export const removeImageobject = async (req, res) => {
 };
 
 //for review the resume file
+const extractTextFromPdf = async (filePath) => {
+    const data = new Uint8Array(fs.readFileSync(filePath));
+    const pdf = await pdfjsLib.getDocument({ data }).promise;
+
+    let text = "";
+
+    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+        const page = await pdf.getPage(pageNum);
+        const content = await page.getTextContent();
+        text += content.items.map(item => item.str).join(" ") + "\n";
+    }
+
+    return text;
+};
 
 export const reviewresume = async (req, res) => {
     try {
-        const userId = req.auth();
+        const { userId } = req.auth();
         const resume = req.file;
         const plan = req.plan;
+        console.log("RESUME FILE:", resume);
+        console.log("AUTH OBJECT:", req.auth());
+        console.log("PLAN VALUE:", req.plan);
 
-        if (plan !== 'premium') {
-            return res.json({
+
+        if (plan?.toLowerCase() !== "premium") {
+            return res.status(403).json({
                 success: false,
-                message: "This feature is only available for Premium subscription. To continue upgrade to Premium Plan."
+                message:
+                    "This feature is only available for Premium subscription. To continue upgrade to Premium Plan."
+            });
+        }
+
+        if (!resume) {
+            return res.status(400).json({
+                success: false,
+                message: "Resume file is required"
             });
         }
 
         if (resume.size > 5 * 1024 * 1024) {
-            return res.json({ success: false, message: "Resume file size exceeds allowed size (5MB). " })
+            return res.status(400).json({
+                success: false,
+                message: "Resume file size exceeds allowed size (5MB)."
+            });
         }
 
+
+
         const require = createRequire(import.meta.url);
-        const pdf = require("pdf-parse");
+        const pdfParse = require("pdf-parse").default;
+
         const dataBuffer = fs.readFileSync(resume.path);
-        const pdfData = await pdf(dataBuffer)
-        const prompt = ` Review the following resume and provide constructive feedback on its strengths, weaknesses, and areas for improvement . Resume content:${pdfData.text}`
+
+
+        const prompt = `Review the following resume and provide constructive feedback on its strengths, weaknesses, and areas for improvement.Resume content:${resumeText}`;
+
+        const resumeText = await extractTextFromPdf(resume.path);
 
         const response = await AI.chat.completions.create({
             model: "gemini-2.5-flash",
-            messages: [{ role: "user", content: prompt }],
+            messages: [{ role: "user", content: resumeText }],
             temperature: 0.7,
-            max_tokens: 1000
+            max_tokens: 1000,
         });
 
         const content = response.choices[0].message.content;
-        //This line extracts the AI-generated text from the API response and stores it in content.
-
 
         await sql`
-            INSERT INTO creations (user_id, content, prompt, type)
-            VALUES (${userId}, ${content},'Review the uploaded resume', 'text')`;
+  INSERT INTO creations (user_id, content, prompt, type)
+  VALUES (${userId}, ${content}, 'Review the uploaded resume', 'text')
+`;
 
-        res.json({ success: true, content });
-
+        return res.json({ success: true, content });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({
+        console.error("RESUME REVIEW ERROR:", error.message);
+        return res.status(500).json({
             success: false,
-            message: error.message
+            message: error.message,
         });
     }
 };
+
