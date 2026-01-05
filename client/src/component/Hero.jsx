@@ -24,36 +24,38 @@ const Hero = () => {
             <p className="text-gray-500 flex justify-center items-center">    2min</p>
 
             {open && (
-  <div className="fixed inset-0 z-50 bg-slate-100 flex items-center justify-center">
-    
-    {/* Close button — OUTSIDE video */}
-    <button
-      onClick={() => setOpen(false)}
-      className="absolute top-6 right-6 text-lg font-semibold  bg-linear-to-l from-[#3C81F6] to-[#9234EA] text-white px-4 py-2 rounded-md shadow hover:bg-gray-200 cursor-pointer"
-    >
-      Close
-    </button>
+               <div className="fixed inset-0 z-50 bg-slate-100 flex items-center justify-center">
 
-    {/* Video container */}
-    <div className="w-[80vw] h-[45vw] max-w-5xl max-h-[70vh] bg-black">
-      <iframe
-        className="w-full h-full"
-        src="https://www.youtube.com/embed/2Pta29pxTbk"
-        title="Demo Video"
-        allow="autoplay; fullscreen"
-        allowFullScreen
-      />
-    </div>
+                  {/* Close button — OUTSIDE video */}
+                  <button
+                     onClick={() => setOpen(false)}
+                     className="absolute top-6 right-6 text-lg font-semibold  bg-linear-to-l from-[#3C81F6] to-[#9234EA] text-white px-4 py-2 rounded-md shadow hover:bg-gray-200 cursor-pointer"
+                  >
+                     Close
+                  </button>
 
-  </div>
-)}
+                  {/* Video container */}
+                  <div className="w-[80vw] h-[45vw] max-w-5xl max-h-[70vh] bg-black">
+                     <iframe
+                        className="w-full h-full"
+                        src="https://www.youtube.com/embed/2Pta29pxTbk"
+                        title="Demo Video"
+                        allow="autoplay; fullscreen"
+                        allowFullScreen
+                     />
+                  </div>
+
+               </div>
+            )}
 
 
          </div>
-         <div className='flex items-center  gap-4 mt-8 mx-auto text-gray-500'>
+         <div className='flex items-center  gap-4 mt-8 mx-auto text-gray-500 -mb-15'>
             <img src={assets.user_group} alt='group image' className='h-8' /> Trusted by 10K+ Users Worldwide
          </div>
       </div>
+
+      // for the ultimate content creation experience.
    )
 }
 

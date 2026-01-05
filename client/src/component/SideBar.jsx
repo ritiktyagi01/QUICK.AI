@@ -15,18 +15,19 @@ const navitems = [
     { to: '/ai/review-resume', label: 'Review Resume', Icon: FileText },
     { to: '/ai/community', label: 'Community', Icon: UsersIcon },
 ]
-const SideBar = (sidebar, setSideBar) => {
+const SideBar = ({ sidebar, setSideBar }) => {
     const { user } = useUser();
     const { signOut, openUserProfile } = useClerk();
 
     return (
-        <div className={`w-60 border-r bg-white border-gray-600 flex flex-col justify-between items-center absolute bottom-0 top-14 ${sidebar ? 'translate-x-0' : 'max-sm:-translate-x-full'} translate-all duration-100 ease-in-out`}>
+        <div  className={` w-60 bg-white border-r border-gray-600  flex flex-col justify-between items-center  fixed top-14 left-0 h-[calc(100vh-56px)] z-50  transform transition-transform duration-300 ease-in-out ${sidebar ? 'translate-x-0' : '-translate-x-full'} sm:static sm:translate-x-0 sm:h-auto `}>
+
             <div className='my-7 w-full'>
-                <img onClick={() => openUserProfile()} src={user.imageUrl} alt='logo' className='w-13 rounded-full mx-auto' />
+                <img onClick={() => openUserProfile()} src={user.imageUrl} alt='logo' className='w-13 rounded-full mx-auto h-12 object-cover cursor-pointer' />
                 <h1 className='text-center mt-2 font-semibold'>{user.fullName}</h1>
                 <div className='px-6 mt-5 text-sm text-gray-600 font-medium'>
                     {navitems.map(({ to, label, Icon }) => (
-                        <NavLink key={to} to={to} end={to == '/ai'} onClick={() => setSideBar(false)} className={({ isActive }) => `px-3.5 py-2.5 flex items-center gap-3 rounded ${isActive ? 'bg-linear-to-l from-[#3C81F6] to-[#9234EA] text-white' : ''}`}>
+                        <NavLink key={to} to={to} end={to === '/ai'} onClick={() => setSideBar(false)} className={({ isActive }) => `px-3.5 py-2.5 flex items-center gap-3 rounded ${isActive ? 'bg-linear-to-l from-[#3C81F6] to-[#9234EA] text-white' : ''}`}>
 
                             {({ isActive }) => (
                                 <>
@@ -35,9 +36,6 @@ const SideBar = (sidebar, setSideBar) => {
                                 </>
                             )}
                         </NavLink>
-
-
-
                     ))}
 
                 </div>
@@ -48,15 +46,15 @@ const SideBar = (sidebar, setSideBar) => {
             </div>
             <div className=' w-full border-t border-gray-200 p-4 px-7 flex items-center justify-between '>
                 <div className='flex items-center gap-2 cursor-pointer'>
-                    <img onClick={() => openUserProfile()} src={user.imageUrl} alt='logo' className='w-8 rounded-full' />
+                    <img onClick={() => openUserProfile()} src={user.imageUrl} alt='logo' className='w-13 rounded-full mx-auto h-12 object-cover cursor-pointer' />
                     <div onClick={() => openUserProfile()} className='text-sm'>
                         <h1 className=' text-sm font-medium'>{user.fullName}</h1>
                         {/* <p className='text-gray-500'>{user.primaryEmailAddress?.emailAddress}</p> */}
-                        <p className='text-xs text-gray-400'>
-                            <Protect plan='premium' fallback='free'> Premium Plan
-
+                        <p className='text-xs text-gray-400  '>
+                            <Protect plan='premium' fallback='free'> Premium
                             </Protect>
-                            
+                            Plan
+
                         </p>
                     </div>
                 </div>

@@ -5,6 +5,7 @@
    font-family: "Outfit", sans-serif;
 }
 
+/* Custom properties for theme colors to maintain consistency in the color scheme. */
 @theme{
   --color-primary: #5044E5;
 }
@@ -14,3 +15,4 @@
 .cl-drawerRoot{
   z-index: 10;
 }
+

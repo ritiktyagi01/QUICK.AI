@@ -5,12 +5,14 @@ import Aitools from '../component/Aitools'
 import Testimonial from '../component/Testimonial'
 import Price from '../component/Price'
 import Footer from '../component/Footer'
+import Socialmedia from '../component/Socialmedia'
 
 const Home = () => {
   return (
     <>
 <Navbar/>
 <Hero/>
+<Socialmedia/>
 <Aitools/>
 <Testimonial/>
 <Price/>
