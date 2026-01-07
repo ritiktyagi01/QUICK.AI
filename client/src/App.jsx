@@ -20,10 +20,10 @@ import { Toaster } from 'react-hot-toast'
 const App = () => {
 
   // Get the token using useAuth
-  const {getToken} = useAuth();
-  useEffect(()=>{
-    getToken().then((token)=>console.log(token));
-  },[])
+  // const {getToken} = useAuth();
+  // useEffect(()=>{
+  //   getToken().then((token)=>console.log(token));
+  // },[])
 
 
 

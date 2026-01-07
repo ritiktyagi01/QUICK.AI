@@ -14,7 +14,7 @@ const ReviewResume = () => {
   const [content, setContent] = useState('');
   const { getToken } = useAuth();
 
-  const MAX_FILE_SIZE =   50 * 1024 * 1024 // 50 MB
+  const MAX_FILE_SIZE =   5 * 1024 * 1024 // 5 MB
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0]
@@ -31,42 +31,50 @@ const ReviewResume = () => {
     setError('')
     setFile(selectedFile)
   }
+const onSubmitHandler = async (e) => {
+  e.preventDefault();
 
-  const onSubmitHandler = async (e) => {
-    e.preventDefault()
-     try {
-      setLoading(true);
-      const token = await getToken();
-      
-      const formData = new FormData();
-      formData.append('resume', file);
-
-      const { data } = await axios.post('/api/ai/review-resume', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${token}`
-        }
-      })
-
-      if (data.success) {
-        setContent(data.content);
-      }
-      else {
-        toast.error(data.message || "Failed to process image.");
-      }
-    }
-     catch (error) {
-      toast.error(error.message || "An error occurred while processing the image.");
-    }
-    finally {
-      setLoading(false);
-    }
-    if (!file) {
-      setError('Please upload a valid image')
-      // Submit logic (API call will go here)
-      return console.log('Uploaded file:', file)
-    }
+  if (!file) {
+    setError("Please upload a valid resume file");
+    return;
   }
+
+  if (Loading) return; // hard stop
+
+  try {
+    setLoading(true);
+    setError("");
+
+    const token = await getToken();
+    const formData = new FormData();
+    formData.append("resume", file);
+
+    const { data } = await axios.post(
+      "/api/ai/review-resume",
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      }
+    );
+
+    if (data.success) {
+      setContent(data.content);
+    } else {
+      toast.error(data.message || "Failed to review resume");
+    }
+  } catch (error) {
+    if (error.response?.status === 429) {
+      toast.error("Too many requests. Please wait and try again.");
+    } else {
+      toast.error("Server error. Please try again.");
+    }
+  } finally {
+    setLoading(false);
+  }
+};
+
 
 
   return (
@@ -93,7 +101,7 @@ const ReviewResume = () => {
           />
 
           <p className='text-sm text-gray-500 mt-2'>
-            Supported formats: PDF, DOC, DOCX. Max size: 50MB.
+            Supported formats: PDF, DOC, DOCX. Max size: 5MB.
           </p>
 
           {error && (

@@ -15,7 +15,7 @@ const Navbar = () => {
       {
         user ? <UserButton /> : (
 
-          <button onClick={openSignIn} className='flex items-center gap-2 rounded-full  text-sm  sm:text-base cursor-pointer bg-primary text-white px-6 py-2 sm:px-10 sm:py-2.5 active:scale-95'> Get Started <ArrowRight className='w-3 h-3 sm:w-4 sm:h-4' /> </button>
+          <button onClick={openSignIn} className='flex items-center gap-2 rounded-full  text-sm  sm:text-base cursor-pointer bg-[#5044E5] text-white px-6 py-2 sm:px-10 sm:py-2.5 active:scale-95'> Get Started <ArrowRight className='w-3 h-3 sm:w-4 sm:h-4' /> </button>
         )
       }
     </div>

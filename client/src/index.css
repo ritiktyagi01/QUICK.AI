@@ -6,7 +6,7 @@
 }
 
 /* Custom properties for theme colors to maintain consistency in the color scheme. */
-@theme{
+:root{
   --color-primary: #5044E5;
 }
 .reset-tw, .reset-tw *{

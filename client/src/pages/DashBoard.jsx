@@ -78,7 +78,7 @@ const DashBoard = () => {
           </div>
         ) : (
           <div className="space-y-4  mt-8">
-            <p className="mt-4 mb-5">Recent Creations</p>
+            <h1 className="mt-4 mb-5 text-2xl">Recent Creations</h1>
 
             {creations.length === 0 ? (
               <p className="text-gray-500 text-center mt-10 ">

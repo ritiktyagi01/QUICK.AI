@@ -10,14 +10,14 @@ const Hero = () => {
       <div className='px-4 sm:px-20 xl:px-32  relative inline-flex flex-col w-full justify-center bg-[url(/gradientBackground.png)] bg-cover bg-no-repeat min-h-screen'>
 
          <div className='text-center mb-6'>
-            <h1 className='text-3xl sm:text-5xl md:text-6xl 2xl:text-7xl font-semibold leading-[1.2]'>Create amazing content <br /> with <span className='text-primary'>AI Tools</span>  </h1>
+            <h1 className='text-3xl sm:text-5xl md:text-6xl 2xl:text-7xl font-semibold leading-[1.2]'>Create amazing content <br /> with <span className='text-[#5044E5]'>AI Tools</span>  </h1>
             <p className='mt-4 max-w-xs sm:max-w-lg 2xl:max-w-xl m-auto max-sm:text-xs text-gray-600'> Transform your content creation with our suite of premium AI tools. Write articles , Generate image and enhance your workflow. </p>
          </div>
          <div className='flex justify-center mt-6'>
-            <button onClick={() => Navigate('/ai')} className='bg-primary  text-white px-6 py-3 rounded-lg font-medium hover:bg-primary-600  active:scale-95 transition duration-300 cursor-pointer '>Start Creating  </button>
+            <button onClick={() => Navigate('/ai')} className='bg-[#5044E5] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#5044E5]-600  active:scale-95 transition duration-300 cursor-pointer '>Start Creating  </button>
             <button
                onClick={() => setOpen(true)}
-               className="ml-4 bg-gray-200 text-primary px-6 py-3 rounded-lg font-medium active:scale-95 hover:bg-gray-300 transition duration-300 cursor-pointer"
+               className="ml-4 bg-gray-200 text-[#5044E5] px-6 py-3 rounded-lg font-medium active:scale-95 hover:bg-gray-300 transition duration-300 cursor-pointer"
             >
                Watch Demo!
             </button>
@@ -36,13 +36,17 @@ const Hero = () => {
 
                   {/* Video container */}
                   <div className="w-[80vw] h-[45vw] max-w-5xl max-h-[70vh] bg-black">
-                     <iframe
-                        className="w-full h-full"
-                        src="https://www.youtube.com/embed/2Pta29pxTbk"
-                        title="Demo Video"
-                        allow="autoplay; fullscreen"
-                        allowFullScreen
-                     />
+                     <iframe className='w-full h-full'
+
+                       src="https://www.youtube.com/embed/RkYIWg5XAnI?start=5&end=390&rel=0&controls=1"
+
+                        title="YouTube video player"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerpolicy="strict-origin-when-cross-origin"
+                        allowfullscreen>
+                     </iframe>
+
                   </div>
 
                </div>
@@ -60,3 +64,10 @@ const Hero = () => {
 }
 
 export default Hero
+
+
+
+
+
+
+
