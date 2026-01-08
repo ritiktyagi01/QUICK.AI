@@ -10,7 +10,7 @@ import WriteArticle from './pages/WriteArticle'
 import RemoveBackground from './pages/RemoveBackground'
 import GenerateImage from './pages/GenerateImage'
 import BlogTitle from './pages/BlogTitle'
-import ReviewResume from './pages/ReviewResume'
+import HumanizeText from './pages/HumanizeText'
 import { useAuth } from '@clerk/clerk-react'
 import { useEffect } from 'react'
 import { useSession } from "@clerk/clerk-react";
@@ -64,7 +64,7 @@ const App = () => {
         <Route path="generate-image" element={<GenerateImage />} />
         <Route path="remove-background" element={<RemoveBackground />} />
         <Route path="remove-object" element={<RemoveObject />} />
-        <Route path="review-resume" element={<ReviewResume />} />
+        <Route path="humanize-text" element={<HumanizeText />} />
         <Route path="community" element={<Community />} />
       </Route>
     </Routes>

@@ -150,10 +150,10 @@ const RemoveObject = () => {
               <h1 className='text-xl font-semibold'>Processed Image</h1>
             </div>
 
-            {!Loading && content &&
-              <div className='mt-4 overflow-y-scroll max-h-128 pr-2'>
+            {!Loading && !content &&
+             ( <div className='mt-4 overflow-y-scroll max-h-128 pr-2'>
                 <p className='whitespace-pre-line text-gray-700'>{content}</p>
-              </div>
+              </div>)
             }
             {Loading &&
               (<div className='flex-1 flex justify-center items-center '>
