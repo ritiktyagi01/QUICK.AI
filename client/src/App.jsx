@@ -11,7 +11,7 @@ import RemoveBackground from './pages/RemoveBackground'
 import GenerateImage from './pages/GenerateImage'
 import BlogTitle from './pages/BlogTitle'
 import HumanizeText from './pages/HumanizeText'
-import { useAuth } from '@clerk/clerk-react'
+import { SignIn, useAuth, useClerk } from '@clerk/clerk-react'
 import { useEffect } from 'react'
 import { useSession } from "@clerk/clerk-react";
 import { Toaster } from 'react-hot-toast'
@@ -41,6 +41,7 @@ const App = () => {
   
   const ProtectedRoutes = ({ children }) => {
     const { isSignedIn, isLoaded } = useAuth();
+    const { openSignIn } = useClerk();
   
     if (!isLoaded) {
       return null;
@@ -48,7 +49,7 @@ const App = () => {
     }
   
     if (!isSignedIn) {
-      return <Navigate to="/" replace />;
+      return <Navigate to={openSignIn} replace />;
     }
   
     return children;

@@ -2,10 +2,12 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { assets } from '../assets/assets';
 import { useState } from 'react';
+import { useClerk } from '@clerk/clerk-react';
 
 const Hero = () => {
    const [open, setOpen] = useState(false);
    const Navigate = useNavigate();
+    const { openSignIn } = useClerk();
    return (
       <div className='px-4 sm:px-20 xl:px-32  relative inline-flex flex-col w-full justify-center bg-[url(/gradientBackground.png)] bg-cover bg-no-repeat min-h-screen'>
 
@@ -14,7 +16,10 @@ const Hero = () => {
             <p className='mt-4 max-w-xs sm:max-w-lg 2xl:max-w-xl m-auto max-sm:text-xs text-gray-600'> Transform your content creation with our suite of premium AI tools. Write articles , Generate image and enhance your workflow. </p>
          </div>
          <div className='flex justify-center mt-6'>
-            <button onClick={() => Navigate('/ai')} className='bg-[#5044E5] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#5044E5]-600  active:scale-95 transition duration-300 cursor-pointer '>Start Creating  </button>
+           {
+            user?( <button onClick={() => Navigate('/ai')} className='bg-[#5044E5] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#5044E5]-600  active:scale-95 transition duration-300 cursor-pointer '>Start Creating  </button>):( <button  onClick={openSignIn} className='bg-[#5044E5] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#5044E5]-600  active:scale-95 transition duration-300 cursor-pointer '>Start Creating  </button>)
+           }
+           
             <button
                onClick={() => setOpen(true)}
                className="ml-4 bg-gray-200 text-[#5044E5] px-6 py-3 rounded-lg font-medium active:scale-95 hover:bg-gray-300 transition duration-300 cursor-pointer"
