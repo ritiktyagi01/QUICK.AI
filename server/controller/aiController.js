@@ -5,7 +5,8 @@ import axios from "axios";
 import FormData from "form-data";
 import { v2 as cloudinary } from "cloudinary"
 import fs from "fs";
-import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
+
+
 import { createRequire } from "module";
 
 // import { GoogleGenerativeAI } from "@google/generative-ai";
@@ -54,7 +55,7 @@ export const generateArticle = async (req, res) => {
             temperature: 0.7,
             max_tokens: length
         });
-    //    console.log("API Response:", JSON.stringify(response, null, 2));
+        //    console.log("API Response:", JSON.stringify(response, null, 2));
 
 
         const content = response.choices[0].message.content;
@@ -72,7 +73,7 @@ export const generateArticle = async (req, res) => {
                 }
             });
         }
-       // console.log("Generated Content:", content);
+        // console.log("Generated Content:", content);
         res.json({ success: true, content });
 
     } catch (error) {
@@ -414,23 +415,13 @@ export const removeImageobject = async (req, res) => {
 
 
 
-const extractTextFromPdf = async (filePath) => {
-    const data = new Uint8Array(fs.readFileSync(filePath));
-    const pdf = await pdfjsLib.getDocument({ data }).promise;
 
-    let text = "";
-
-    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-        const page = await pdf.getPage(pageNum);
-        const content = await page.getTextContent();
-        text += content.items.map(item => item.str).join(" ") + "\n";
-    }
-
-    return text;
-};
 
 /* -------------------------------------------------------
    Helper: Trim text to safe size (CRITICAL)
+------------------------------------------------------- */
+/* -------------------------------------------------------
+   Helper: Trim text to safe size
 ------------------------------------------------------- */
 const trimText = (text, maxChars = 4000) => {
     if (!text) return "";
@@ -453,12 +444,12 @@ const callAIWithRetry = async (payload, retries = 2, delayMs = 1500) => {
 };
 
 /* -------------------------------------------------------
-   Controller: Review Resume
+   Controller: Humanize AI Text
 ------------------------------------------------------- */
-export const reviewresume = async (req, res) => {
+export const humanizeText = async (req, res) => {
     try {
         const { userId } = req.auth();
-        const resume = req.file;
+        const { text } = req.body;
         const plan = req.plan;
 
         /* -------- Plan check -------- */
@@ -469,44 +460,38 @@ export const reviewresume = async (req, res) => {
             });
         }
 
-        /* -------- File checks -------- */
-        if (!resume) {
+        /* -------- Input validation -------- */
+        if (!text || !text.trim()) {
             return res.status(400).json({
                 success: false,
-                message: "Resume file is required."
+                message: "Text input is required."
             });
         }
 
-        if (resume.size > 50 * 1024 * 1024) {
-            return res.status(400).json({
-                success: false,
-                message: "Resume file size must be under 50MB."
-            });
-        }
-
-        /* -------- Extract + trim text -------- */
-        const rawText = await extractTextFromPdf(resume.path);
-        const resumeText = trimText(rawText, 4000);
+        /* -------- Trim input -------- */
+        const safeText = trimText(text, 4000);
 
         /* -------- Prompt -------- */
         const prompt = `
-You are an expert resume reviewer.
+Rewrite the following AI-generated text so that it sounds natural,
+human-written, fluent, and engaging.
 
-Analyze the resume and provide:
-1. Strengths
-2. Weaknesses
-3. Specific improvement suggestions
+Rules:
+- Do NOT change the meaning
+- Avoid robotic or repetitive phrasing
+- Improve sentence flow and tone
+- Use natural transitions
 
-Resume content:
-${resumeText}
+Text:
+${safeText}
 `;
 
-        /* -------- AI call (retry protected) -------- */
+        /* -------- AI call -------- */
         const response = await callAIWithRetry({
             model: "gemini-2.5-flash",
             messages: [{ role: "user", content: prompt }],
-            temperature: 0.6,
-            max_tokens: 400
+            temperature: 0.7,
+            max_tokens: 500
         });
 
         const content = response.choices[0].message.content;
@@ -514,7 +499,7 @@ ${resumeText}
         /* -------- Save result -------- */
         await sql`
             INSERT INTO creations (user_id, content, prompt, type)
-            VALUES (${userId}, ${content}, 'Review the uploaded resume', 'text')
+            VALUES (${userId}, ${content}, 'Humanize AI-generated text', 'text')
         `;
 
         return res.json({
@@ -524,15 +509,14 @@ ${resumeText}
 
     } catch (error) {
 
-        /* -------- Rate limit handling -------- */
         if (error.status === 429) {
             return res.status(429).json({
                 success: false,
-                message: "AI service is busy. Please try again after some time."
+                message: "AI service is busy. Please try again later."
             });
         }
 
-        console.error("RESUME REVIEW ERROR:", error);
+        console.error("HUMANIZE TEXT ERROR:", error);
         return res.status(500).json({
             success: false,
             message: "Internal server error."
