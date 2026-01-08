@@ -36,8 +36,23 @@ const App = () => {
   //     console.log(token);
   //   });
   // }, [isLoaded, session]);
-
-
+  
+  
+  
+  const ProtectedRoutes = ({ children }) => {
+    const { isSignedIn, isLoaded } = useAuth();
+  
+    if (!isLoaded) {
+      return null;
+      // <div className='flex justify-center items-center h-screen font-extrabold '>Loading...</div>;
+    }
+  
+    if (!isSignedIn) {
+      return <Navigate to="/" replace />;
+    }
+  
+    return children;
+  };
 
 
   return (
@@ -70,20 +85,6 @@ const App = () => {
     </Routes>
   </>
 )};
-
-const ProtectedRoutes = ({ children }) => {
-  const { isSignedIn, isLoaded } = useAuth();
-
-  if (!isLoaded) {
-    return <div className='flex justify-center items-center h-screen font-extrabold '>Loading...</div>;
-  }
-
-  if (!isSignedIn) {
-    return <Navigate to="/" replace />;
-  }
-
-  return children;
-};
 
 
 export default App;
