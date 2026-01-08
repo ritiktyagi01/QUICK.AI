@@ -2,12 +2,13 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { assets } from '../assets/assets';
 import { useState } from 'react';
-import { useClerk } from '@clerk/clerk-react';
+import { useClerk,useUser } from '@clerk/clerk-react';
 
 const Hero = () => {
    const [open, setOpen] = useState(false);
    const Navigate = useNavigate();
     const { openSignIn } = useClerk();
+    const { user } = useUser();
    return (
       <div className='px-4 sm:px-20 xl:px-32  relative inline-flex flex-col w-full justify-center bg-[url(/gradientBackground.png)] bg-cover bg-no-repeat min-h-screen'>
 
