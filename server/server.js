@@ -17,7 +17,8 @@ await connectCloudinary();
 app.use(express.json());
 app.use(cors());
 app.use(clerkMiddleware());
-app.use(requireAuth());
+app.use('/api/ai', requireAuth(), airouter);
+app.use('/api/user', requireAuth(), userRouter);
 app.use('/api/ai',airouter);
 app.use('/api/user',userRouter);
 
