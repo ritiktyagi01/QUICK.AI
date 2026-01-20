@@ -15,11 +15,16 @@ import { SignIn, useAuth, useClerk } from '@clerk/clerk-react'
 import { useEffect } from 'react'
 import { useSession } from "@clerk/clerk-react";
 import { Toaster } from 'react-hot-toast'
+import { useLoading } from "./context/LoadingContext";
+import Loader from "./component/Loader";
+import RouteLoader from "./component/RouteLoader";
+
 
 
 const App = () => {
+    const { loading } = useLoading();
 
-  // Get the token using useAuth
+  //Get the token using useAuth
   // const {getToken} = useAuth();
   // useEffect(()=>{
   //   getToken().then((token)=>console.log(token));
@@ -57,7 +62,10 @@ const App = () => {
 
 
   return (
+
   <>
+  {loading && <Loader />}
+      <RouteLoader />
     {/* Global UI */}
     <Toaster />
 
